@@ -1,12 +1,17 @@
 import React, { useContext, useRef, useState } from 'react'
 import { UserContext } from '../context/userContext'
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUpModal() {
+
+    const navigate = useNavigate()
+
     const { modalState, toggleModals, signUp } = useContext(UserContext);
   
     const [validation, setValidation] = useState("");
 
     const inputs = useRef([])
+
     const addInputs = el => {
         if(el && !inputs.current.includes(el)){
             inputs.current.push(el)
@@ -29,13 +34,15 @@ export default function SignUpModal() {
           }
 
           try{
-            const userInfo = await signUp(
+            await signUp(
                 inputs.current[0].value,
                 inputs.current[1].value
             )
             formRef.current.reset();
             setValidation("")
-            console.log(userInfo)
+            toggleModals('close')
+            navigate('/private/private-home')
+
 
           } catch(err){
            if(err.code === 'auth/invalid-email'){
